@@ -52,12 +52,12 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
     const cargoStatus = document.getElementById("cargoStatus")
     const launchStatus = document.getElementById("launchStatus")
     
-    list.style.visibility = "visible";//make faulty items div to display on every submission
+    // list.style.visibility = "visible";//make faulty items div to display on every submission
 
     const pilotIsReady = checkCrewMember(pilot, pilotStatus, launchStatus, "Pilot")
-    const copilotIsReady = checkCrewMember(copilot, copilotStatus, launchStatus, "Copilot")
-    const fuelLevelIsHigh = checkFuelLevel(fuelLevel, fuelStatus, launchStatus);
-    const cargoLevelIsLow = checkCargolevel(cargoLevel, cargoStatus, launchStatus);
+    const copilotIsReady = checkCrewMember(copilot, copilotStatus, launchStatus, "Co-pilot")
+    const fuelLevelIsHigh = checkFuelLevel(list, fuelLevel, fuelStatus, launchStatus);
+    const cargoLevelIsLow = checkCargolevel(list, cargoLevel, cargoStatus, launchStatus);
 
     if( 
         pilotIsReady == true && 
@@ -65,52 +65,61 @@ function addDestinationInfo(document, name, diameter, star, distance, moons, ima
         fuelLevelIsHigh == true && 
         cargoLevelIsLow == true
     ) {
-        launchStatus.innerHTML = "Shuttle is ready for launch"
+        launchStatus.innerHTML = "Shuttle is Ready for Launch"
         launchStatus.style.color = "green"
     }
 
+    
  }
 
 function checkCrewMember(crewInput, crewStatus, launchStatus, crewRoleStr) {
     if (validateInput(crewInput) === "Empty" || validateInput(crewInput) === "Is a Number") {
-      launchStatus.innerHTML = "Shuttle not ready for launch";
+        list.style.visibility = "visible";//make faulty items div to display on every submission
+        launchStatus.innerHTML = "Shuttle Not Ready for Launch";
       launchStatus.style.color = "red";
-      crewStatus.textContent = `${crewRoleStr} is not Ready`;
+      crewStatus.textContent = `${crewRoleStr} not Ready`;
       return false;
     } else if (validateInput(crewInput) === "Not a Number") {
-        crewStatus.textContent = `${crewInput} is Ready`;
+        crewStatus.textContent = `${crewRoleStr} ${crewInput} is ready for launch`;
       return true;
     }
   }
 
-  function checkFuelLevel(fuelLevel, fuelStatus, launchStatus) {
+  function checkFuelLevel(list, fuelLevel, fuelStatus, launchStatus) {
 
-    if (Number(fuelLevel) < 10000 || validateInput(fuelLevel) === "Not a Number") {
-        launchStatus.innerHTML = "Shuttle not ready for launch";
-        launchStatus.style.color = "red";
-    
-        if (Number(fuelLevel) < 10000) {
-          fuelStatus.innerHTML = "There is not enough fuel for the journey";
-        } else {
-          fuelStatus.innerHTML = "The amount of fuel is not valid";
-        }
+
+    if (Number(fuelLevel) < 10000) {
+        list.style.visibility = "visible";//make faulty items div to display on every submission
+        launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+        launchStatus.style.color = "red"; 
+        fuelStatus.innerHTML = "Fuel level too low for launch";
+       
         return false;
-      } else {
+      }
+      else if(validateInput(fuelLevel) === "Not a Number") {
+        launchStatus.innerHTML = "Shuttle Not Ready for Launch";
+        launchStatus.style.color = "red";
+        fuelStatus.innerHTML = "The amount of fuel is not valid";
+        return false;
+      }
+       else {
         fuelStatus.innerHTML = "Fuel level high enough for launch";
         return true;
       }
 
+    
+
   }
 
-  function checkCargolevel(cargoLevel, cargoStatus, launchStatus) {
+  function checkCargolevel(list, cargoLevel, cargoStatus, launchStatus) {
 
     if(Number(cargoLevel) > 10000 || validateInput(cargoLevel) == "Empty" || validateInput(cargoLevel) == "Not a Number"){
-
-        launchStatus.innerHTML = "Shuttle not ready for launch"
+        list.style.visibility = "visible";//make faulty items div to display on every submission
+        launchStatus.innerHTML = "Shuttle Not Ready for Launch"
         launchStatus.style.color = "red"
     
         if(Number(cargoLevel) > 10000){
-            cargoStatus.innerHTML = "There is too much mass for the shuttle to take off"
+            cargoStatus.innerHTML = "Cargo mass too heavy for launch"
         } 
         else if(validateInput(cargoLevel) == "Empty") {
             cargoStatus.innerHTML = "There is no mass for the shuttle to take off"
@@ -125,10 +134,9 @@ function checkCrewMember(crewInput, crewStatus, launchStatus, crewRoleStr) {
     }
   }
  
- async function myFetch(url) {
+ async function myFetch() {
      let planetsReturned;
- 
-     planetsReturned = fetch(url).then( async function(response) {
+     planetsReturned = fetch('https://handlers.education.launchcode.org/static/planets.json').then( function(response) {
         return response.json();
          });
  

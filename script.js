@@ -23,7 +23,7 @@ window.addEventListener("load", async function() {
 
     let listedPlanets;
     // Set listedPlanetsResponse equal to the value returned by calling myFetch()
-    let listedPlanetsResponse = this.myFetch("https://handlers.education.launchcode.org/static/planets.json");
+    let listedPlanetsResponse = this.myFetch();
     listedPlanetsResponse.then(function (result) {
         listedPlanets = result;
         console.log(listedPlanets);
